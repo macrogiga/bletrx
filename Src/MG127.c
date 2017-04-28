@@ -241,14 +241,14 @@ void BLE_Do_Cal(void);
 *******************************************************************************/
 void BLE_Mode_Sleep(void)
 {
-	uint8_t	temp0[4];
+    uint8_t	temp0[4];
 
     temp0[0] = 0x02;
     temp0[1] = 0xff;
     temp0[2] = 0xff;
     temp0[3] = 0xff;
 
-	SPI_Write_Buffer(SLEEP_WAKEUP,temp0,4);
+    SPI_Write_Buffer(SLEEP_WAKEUP,temp0,4);
 }
 
 /*******************************************************************************
@@ -291,13 +291,13 @@ void BLE_Mode_PwrDn(void)
 *******************************************************************************/
 void BLE_Set_StartTime(uint32_t htime)
 {
-	uint8_t temp0[3];
+    uint8_t temp0[3];
 
     temp0[0] = htime & 0xFF;
     temp0[1] = (htime>>8) & 0xFF;
     temp0[2] = (htime>>16) & 0xFF;
 
-	SPI_Write_Buffer(START_TIME,temp0,3);
+    SPI_Write_Buffer(START_TIME,temp0,3);
 }
 
 
@@ -310,7 +310,7 @@ void BLE_Set_StartTime(uint32_t htime)
 *******************************************************************************/
 void BLE_Set_TimeOut(uint32_t data_us)
 {
-	uint8_t temp0[3];
+    uint8_t temp0[3];
 
     temp0[0] = data_us & 0xff;
     temp0[1] = (data_us >> 8) & 0xff;
@@ -330,7 +330,7 @@ void BLE_Set_Xtal(uint8_t on_flag)
 {
     SPI_Write_Reg(0x50, 0x53);
     SPI_Write_Reg(0x3D, 0x18|(on_flag<<2));
-	SPI_Write_Reg(0x50, 0x56);
+    SPI_Write_Reg(0x50, 0x56);
 }
 
 static void BLE_Get_Pdu(uint8_t *ptr, uint8_t *len)
@@ -437,9 +437,9 @@ void BLE_Do_Cal()  //calibration
 *******************************************************************************/
 void BLE_Init(void)
 {
-	uint8_t status;
-	uint8_t data_buf[4];
-	uint8_t ble_Addr[6];
+    uint8_t status;
+    uint8_t data_buf[4];
+    uint8_t ble_Addr[6];
 
 
     SPI_Write_Reg(0x50, 0x51);
@@ -469,23 +469,23 @@ void BLE_Init(void)
     }while(status != 0x80);
 
 
-	//read chip version
+    //read chip version
    	status = SPI_Read_Reg(0x1e);
 #if 1 //debug
-	Uart_Send_String("chip version=");
-	Uart_Send_Byte(status);
-	Uart_Send_String("\r\n");
+    Uart_Send_String("chip version=");
+    Uart_Send_Byte(status);
+    Uart_Send_String("\r\n");
 #endif
 
-	SPI_Write_Reg(0X20, 0x78);//power down,tx, for hot reset
-	SPI_Write_Reg(0X26, 0x06);//1Mbps
+    SPI_Write_Reg(0X20, 0x78);//power down,tx, for hot reset
+    SPI_Write_Reg(0X26, 0x06);//1Mbps
     SPI_Write_Reg(0X20, 0x7a);//power up
 
     SPI_Write_Reg(0x50, 0x56);
 
     BLE_Mode_Sleep();
 
-	//read BLE address. BLE MAC Address
+    //read BLE address. BLE MAC Address
     SPI_Read_Buffer(0x08, ble_Addr, 6);
 #if 1 //debug
 	Uart_Send_String("BleAddr=");
@@ -501,14 +501,14 @@ void BLE_Init(void)
 
     SPI_Write_Reg(0x50, 0x53);
 
-	data_buf[0] = 0xff;
-	data_buf[1] = 0x80; //xocc
-	SPI_Write_Buffer(0x14,data_buf,2);
+    data_buf[0] = 0xff;
+    data_buf[1] = 0x80; //xocc
+    SPI_Write_Buffer(0x14,data_buf,2);
 
     //set BLE TX Power
-	data_buf[0] = 0x02;
-	data_buf[1] = BLE_TX_POWER;
-	SPI_Write_Buffer(0x0f,data_buf,2);
+    data_buf[0] = 0x02;
+    data_buf[1] = BLE_TX_POWER;
+    SPI_Write_Buffer(0x0f,data_buf,2);
 
     data_buf[1] = SPI_Read_Reg(0x08);  //txgain
     if(0 == data_buf[1]){
@@ -560,14 +560,14 @@ void BLE_Init(void)
 *******************************************************************************/
 void BLE_TRX()
 {
-	uint8_t status = 0;
+    uint8_t status = 0;
     uint8_t ch = 37;
     uint8_t data_buf[2];
-
+    uint8_t tmp_cnt = txcnt+rxcnt;
     uint8_t len_pdu = 0;
     uint8_t loop = 0;
 
-    if((txcnt==0) && (rxcnt==0)) return;
+    if(tmp_cnt == 0) return;
 
     BLE_Set_Xtal(1);
 
@@ -575,30 +575,30 @@ void BLE_TRX()
 
 #if 1  //if adv_data no change, can move this block to the end of BLE_Init()
     //set BLE TX default channel:37.38.39
-	SPI_Write_Reg(CH_NO|0X20, ch);
+    SPI_Write_Reg(CH_NO|0X20, ch);
 
-	//BLT FIFO write adv_data . max len:31 byte
-	SPI_Write_Buffer(W_TX_PAYLOAD, adv_data, LEN_DATA);
+    //BLT FIFO write adv_data . max len:31 byte
+    SPI_Write_Buffer(W_TX_PAYLOAD, adv_data, LEN_DATA);
 
     //PDU TYPE: 2  non-connectable undirected advertising . tx add:random address
-	//set BLT PDU length:adv_data+6 mac adress.
-	data_buf[0] = 0x02;
-	data_buf[1] = LEN_DATA+LEN_BLE_ADDR;
-	SPI_Write_Buffer(ADV_HDR_TX, data_buf, 2);
+    //set BLT PDU length:adv_data+6 mac adress.
+    data_buf[0] = 0x02;
+    data_buf[1] = LEN_DATA+LEN_BLE_ADDR;
+    SPI_Write_Buffer(ADV_HDR_TX, data_buf, 2);
 #endif
 
     BLE_Mode_Wakeup();
 
     BLE_Set_TimeOut(BLE_RX_TIMEOUT);
 
-	while(1)
-	{
-		//BLE IRQ LOW
-		if (!BLE_IRQ_GET())
-		{
-			//clear interrupt flag
-			status = SPI_Read_Reg(INT_FLAG);
-			SPI_Write_Reg(INT_FLAG|0X20, status);
+    while(1)
+    {
+        //BLE IRQ LOW
+        if (!BLE_IRQ_GET())
+        {
+            //clear interrupt flag
+            status = SPI_Read_Reg(INT_FLAG);
+            SPI_Write_Reg(INT_FLAG|0X20, status);
             //Uart_Send_Byte(status); //debug
 
             if(INT_TYPE_WAKEUP == status)//wakeup
@@ -616,7 +616,7 @@ void BLE_TRX()
 
             }
 
-			BLE_Mode_Sleep();
+            BLE_Mode_Sleep();
 
             if(INT_TYPE_PDU_OK & status){ //only happen in rx application, no need porting in tx only application
                 LED_RED_ON(); //debug
@@ -637,13 +637,14 @@ void BLE_TRX()
                 LED_GREEN_OFF(); //debug
                 LED_RED_OFF();  //debug
 
-				//BLE channel
+                //BLE channel
                 if (++ch > 39){
                     ch = 37;
                 }
                 SPI_Write_Reg(CH_NO|0X20, ch);
 
-                if((txcnt==0) && (rxcnt==0)){
+                tmp_cnt --;
+                if(tmp_cnt == 0){
                     BLE_Set_Xtal(0);
                     BLE_Mode_PwrDn();
                     break; //exit from while(1)
@@ -652,7 +653,7 @@ void BLE_TRX()
                     BLE_Mode_Wakeup();
             }
 
-		}
+        }
 
-	}
+    }
 }
