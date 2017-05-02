@@ -21,6 +21,8 @@
 #define LEN_BLE_ADDR 6
 
 /* Private variables ---------------------------------------------------------*/
+extern unsigned short tick;
+
 unsigned char rx_buf[39]; //include header(2B)+mac(6B)+data(max31B), for rx application
 
 //BLE ADV_data, maxlen=31
@@ -542,13 +544,7 @@ void BLE_Init(void)
     data_buf[1] = 0x07;
     SPI_Write_Buffer(0xE, data_buf, 2);
 
-    BLE_Do_Cal();
-
-    //clear all interrupt
-    data_buf[0] = 0xFF;
-    data_buf[1] = 0x80;
-    SPI_Write_Buffer(INT_FLAG, data_buf, 2);
-
+    SPI_Write_Reg(0x50, 0x56);
 }
 
 /*******************************************************************************
@@ -585,12 +581,18 @@ void BLE_TRX()
     data_buf[0] = 0x02;
     data_buf[1] = LEN_DATA+LEN_BLE_ADDR;
     SPI_Write_Buffer(ADV_HDR_TX, data_buf, 2);
+
+    //clear all interrupt
+    data_buf[0] = 0xFF;
+    data_buf[1] = 0x80;
+    SPI_Write_Buffer(INT_FLAG, data_buf, 2);
 #endif
 
     BLE_Mode_Wakeup();
 
     BLE_Set_TimeOut(BLE_RX_TIMEOUT);
 
+    tick = 2*BLE_RX_TIMEOUT/1000;
     while(1)
     {
         //BLE IRQ LOW
@@ -601,7 +603,7 @@ void BLE_TRX()
             SPI_Write_Reg(INT_FLAG|0X20, status);
             //Uart_Send_Byte(status); //debug
 
-            if(INT_TYPE_WAKEUP == status)//wakeup
+            if(INT_TYPE_WAKEUP & status)//wakeup
             {
                 if(txcnt > 0){
                     txcnt --;
@@ -636,6 +638,7 @@ void BLE_TRX()
             {
                 LED_GREEN_OFF(); //debug
                 LED_RED_OFF();  //debug
+                tick = 2*BLE_RX_TIMEOUT/1000;
 
                 //BLE channel
                 if (++ch > 39){
@@ -653,6 +656,9 @@ void BLE_TRX()
                     BLE_Mode_Wakeup();
             }
 
+        }
+        else if(tick == 0){ //robustness, in case no int
+            BLE_Mode_Sleep();
         }
 
     }
