@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    :Main.c
+  * @file    :MG127.c
   * @author  :MG Team
   * @version :V1.0
   * @date
@@ -11,14 +11,15 @@
 /* Includes ------------------------------------------------------------------*/
 #include "Includes.h"
 
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 
 
 
-
 /* Private macro -------------------------------------------------------------*/
 #define LEN_BLE_ADDR 6
+
 
 /* Private variables ---------------------------------------------------------*/
 extern unsigned short tick;
@@ -28,206 +29,6 @@ unsigned char rx_buf[39]; //include header(2B)+mac(6B)+data(max31B), for rx appl
 //BLE ADV_data, maxlen=31
 #define LEN_DATA 30
 uint8_t adv_data[30] = {0x02,0x01,0x04, 0x1a,0xff,0x4c,0x00,2,0x15, 0xfd,0xa5,0x06,0x93,0xa4,0xe2,0x4f,0xb1,0xaf,0xcf,0xc6,0xeb,0x07,0x64,0x78,0x25, 0x27,0x38,0x9d,0x85, 0xB6};
-
-#if 0
-#define LEN_DATA 18
-static uint8_t adv_data[LEN_DATA] = {2,1,4, 0x0a,0x09,0x4d,0x41,0x43,0x52,0x4f,0x47,0x49,0x47,0x41,0x03,0xff,0x00,0x09};
-
-#define LEN_WECHAT 30
-static uint8_t adv_data[LEN_WECHAT] = {0x02,0x01,0x04, 0x1a,0xff,0x4c,0x00,2,0x15, 0xfd,0xa5,0x06,0x93,0xa4,0xe2,0x4f,0xb1,0xaf,0xcf,0xc6,0xeb,0x07,0x64,0x78,0x25, 0x27,0x32,0x52,0xa9, 0xB6};
-
-
-//iBeacon data format
-static uint8_t iBeacon_adv_data[] =
-{
-	/*
-	02 # Number of bytes that follow in first AD structure
-	01 # Flags AD type
-	04 # Flags value
-	1A # Number of bytes that follow in second (and last) AD structure
-	FF # Manufacturer specific data AD type
-	4C 00 # Company identifier code (0x004C == Apple)
-	02 # Byte 0 of iBeacon advertisement indicator
-	15 # Byte 1 of iBeacon advertisement indicator
-	*/
-	//{
-	0x02,															/* length 0x02*/
-	BLE_GAP_AD_TYPE_FLAGS,											/* AD type = 01 */
-	GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED|GAP_ADTYPE_FLAGS_GENERAL, 	/* LE Mode = 0x06 */
-	//}
-
-
-	0x1a,															/* length 0x1a*/
-	BLE_GAP_AD_TYPE_MANUFACTURER_SPECIFIC_DATA,						/* AD type = 0xFF Manufacturer Specific Data */
-	/*CompanyID (AppleID 0x004C)https://www.bluetooth.com/specifications/assigned-numbers/company-Identifiers*/
-	0x4c,0x00,														/* CompanyID = 0x004C */
-	0x02,															/* iBeacon flag = 0x02 */
-	0x15, 															/* length 0x15 length :0x15 21byte  (16B UUID+ 2B major, 2B minor, 1B Txpower)*/
-	/*UUID */
-	0xfd,0xa5,0x06,0x93,0xa4,0xe2,0x4f,0xb1,0xaf,0xcf,0xc6,0xeb,0x07,0x64,0x78,0x25,
-	/***************User set***********************/
-	0x27,0x38,														/*Major*/
-	0x9d,0x85,														/*Minjo*/
-	0xB6															/*Txpower*/
-	/***************User End***********************/
-
-};
-
-//Beacon remote data format
-static uint8_t Beacon_Key_Press_adv_data[] =
-{
-	0x02,															/* length 0x02*/
-	BLE_GAP_AD_TYPE_FLAGS,											/* AD type = 01 */
-	GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED|GAP_ADTYPE_FLAGS_GENERAL, 	/* LE Mode = 0x06 */
-
-
-	0x0a,															/* length 0x1a*/
-	BLE_GAP_AD_TYPE_COMPLETE_LOCAL_NAME,							/* AD type = 0x09*/
-	'K','e','y','-','P','r','e','s', 's',							/* use Ascii */
-
-
-	0x03,															/* length 0x03*/
-	BLE_GAP_AD_TYPE_MANUFACTURER_SPECIFIC_DATA,						/* AD type = 0xFF */
-	/***************User set***********************/
-	0x20,0x0b,
-	/***************User End***********************/
-};
-
-//Beacon remote data format
-static uint8_t Beacon_Key_uP_adv_data[] =
-{
-	0x02,															/* length 0x02*/
-	BLE_GAP_AD_TYPE_FLAGS,											/* AD type = 01 */
-	GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED|GAP_ADTYPE_FLAGS_GENERAL, 	/* LE Mode = 0x06 */
-
-	0x0a,															/* length 0x1a*/
-	BLE_GAP_AD_TYPE_COMPLETE_LOCAL_NAME,							/* AD type = 0x09*/
-	'K','e','y','-','-','-','-','U', 'p',
-
-	0x03,															/* length 0x03*/
-	BLE_GAP_AD_TYPE_MANUFACTURER_SPECIFIC_DATA,						/* AD type = 0xFF */
-	/***************User set***********************/
-	0x10,0x0b,
-	/***************User End***********************/
-};
-
-//Eddystone data format
-static uint8_t Eddystone_Uri_adv_data[]=
-{
-	/***************User End***********************/
-	/*Service Data - 16-bit UUID. */
-	//BLE_GAP_AD_TYPE_SERVICE_DATA,
-	/*Google 16bit UUID */
-	//0xAA,0xFE,
-	//{
-    0x02, 															/* length 0x02*/
-    BLE_GAP_AD_TYPE_FLAGS, 											/* AD type = 01 */
-    GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED|GAP_ADTYPE_FLAGS_GENERAL, 	/* LE Mode = 0x06 */
-	//}
-
-	//{
-    /* Eddystone(https://github.com/google/eddystone/blob/master/protocol-specification.md) */
-    0x03, 															/* length 0x03 */
-    BLE_GAP_AD_TYPE_16BIT_SERVICE_UUID_COMPLETE, 					/* AD type = Complete list of 16-bit UUIDs available */
-    0xAA,															/* Eddystone service FEAA */
-    0xFE,
-	//}
-
-	//{
-    0x0b, 															/* length 12byte*/
-    BLE_GAP_AD_TYPE_SERVICE_DATA, 									/* AD type = Service Data type value */
-    0xAA, 															/* Eddystone service FEAA */
-    0xFE,
-
-    /* Eddystone-URL(https://github.com/google/eddystone/tree/master/eddystone-url) */
-    0x10,                   										/* Frame Type: URL */
-    0xb6,                   										/* Ranging Data */
-    0x00,                   										/* URL Scheme: https:// */
-    'j','b','5','1',//'s','z','o','k','l','e',
-    0x0a,
-	//}
-};
-
-/*- INDICATION data -*/
-uint8_t Eddystone_Uid_adv_data[] = {
-	/*Service Data - 16-bit UUID. */
-	//BLE_GAP_AD_TYPE_SERVICE_DATA,
-	/*Google 16bit UUID */
-	//0xAA,0xFE,
-	//{
-    0x02, 															/* length 0x02*/
-    BLE_GAP_AD_TYPE_FLAGS, 											/* AD type = 01 */
-    GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED|GAP_ADTYPE_FLAGS_GENERAL, 	/* LE Mode = 0x06 */
-	//}
-
-
-	//{
-    /* Eddystone(https://github.com/google/eddystone/blob/master/protocol-specification.md) */
-    0x03, 															/* length 0x03 */
-    BLE_GAP_AD_TYPE_16BIT_SERVICE_UUID_COMPLETE, 					/* AD type = Complete list of 16-bit UUIDs available */
-    0xAA,															/* Eddystone service FEAA */
-    0xFE,
-	//}
-
-
-	//{
-    0x17, 															/* length 12byte*/
-    BLE_GAP_AD_TYPE_SERVICE_DATA, 									/* AD type = Service Data type value */
-    0xAA, 															/* Eddystone service FEAA */
-    0xFE,
-
-
-    0x00,               											/* Frame Type: UID */
-    0xE7,              	 											/* Ranging Data */
-    0x16, 0xF7, 0x42, 0xf6, 0xA8, 0x8C, 0x57, 0x5B, 0x53, 0x24,		/* Namespace:MSB 10Bytes*/
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x01,                             /* Instance */
-    0x00,               											/* Reserved */
-    0x00,               											/* Reserved */
-	//}
-};
-
-
-
-uint8_t Eddystone_Tlm_adv_data[] = {
-	/*Service Data - 16-bit UUID. */
-	//BLE_GAP_AD_TYPE_SERVICE_DATA,
-	/*Google 16bit UUID */
-	//0xAA,0xFE,
-	//{
-    0x02, 															/* length 0x02*/
-    BLE_GAP_AD_TYPE_FLAGS, 											/* AD type = 01 */
-    GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED|GAP_ADTYPE_FLAGS_GENERAL, 	/* LE Mode = 0x06 */
-	//}
-
-
-	//{
-    /* Eddystone(https://github.com/google/eddystone/blob/master/protocol-specification.md) */
-    0x03, 															/* length 0x03 */
-    BLE_GAP_AD_TYPE_16BIT_SERVICE_UUID_COMPLETE, 					/* AD type = Complete list of 16-bit UUIDs available */
-    0xAA,															/* Eddystone service FEAA */
-    0xFE,
-	//}
-
-
-	//{
-    0x11, 															/* length 12byte*/
-    BLE_GAP_AD_TYPE_SERVICE_DATA, 									/* AD type = Service Data type value */
-    0xAA, 															/* Eddystone service FEAA */
-    0xFE,
-
-    /* Eddystone-TLM(https://github.com/google/eddystone/tree/master/eddystone-tlm) */
-    0x20,                   										/* Frame Type: TLM */
-    0x00,                   										/* TLM Version */
-    0x0b, 0x54,             										/* Battery voltage 2900[mV] */
-    0x0b, 0x54,             										/* Beacon Temperature */
-    0x00, 0x00, 0x10, 0x00, 										/* Advertising PDU count */
-    0x01, 0x00, 0x00, 0x00, 										/* Time since power-on or reboot */
-    //}
-
-};
-
-#endif
-
 
 
 /* Private function prototypes -----------------------------------------------*/
@@ -591,8 +392,8 @@ void BLE_TRX()
     BLE_Mode_Wakeup();
 
     BLE_Set_TimeOut(BLE_RX_TIMEOUT);
+    tick = BLE_GUARD_TIME;
 
-    tick = 2*BLE_RX_TIMEOUT/1000;
     while(1)
     {
         //BLE IRQ LOW
@@ -638,7 +439,7 @@ void BLE_TRX()
             {
                 LED_GREEN_OFF(); //debug
                 LED_RED_OFF();  //debug
-                tick = 2*BLE_RX_TIMEOUT/1000;
+                tick = BLE_GUARD_TIME;
 
                 //BLE channel
                 if (++ch > 39){

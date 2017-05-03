@@ -17,7 +17,7 @@ EVB: AS06_VTB01_V3.0
 
 20170427	调整程序框架,用户程序可以在main()中增加,根据需要调用ble发送和接收的次数.
 20170428	update adv_data in BLE_TRX(), modify indent.
-20170502	improve robustness
-
+20170502	improve robustness.
+20170503	Add macro BLE_GUARD_TIME, clean code.
 
 
