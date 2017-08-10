@@ -348,6 +348,41 @@ void BLE_Init(void)
     SPI_Write_Reg(0x50, 0x56);
 }
 
+//2480MHz carrier, for xtal capacitor tuning
+//call this function after BLE_Init() in main()
+void Carrier(void)
+{
+    unsigned long delay=0x14000;
+    
+    SPI_Write_Reg(0x50, 0x51);
+    SPI_Write_Reg(0x50, 0x53);
+    
+    SPI_Write_Reg(0x3d, 0x1e);
+    while(delay--);
+
+    SPI_Write_Reg(0x50, 0x56);
+    SPI_Write_Reg(0x20,0x0);
+    
+    SPI_Write_Reg(0x50, 0x53);	
+    SPI_Write_Reg(0x36, 0x8c);  //
+    SPI_Write_Reg(0x50, 0x51);
+    
+    SPI_Write_Reg(0x21,0x00);
+    SPI_Write_Reg(0x25,0x50);
+    SPI_Write_Reg(0x24,0x00);
+    
+    SPI_Write_Reg(0x20,0x0e);
+    SPI_Write_Reg(0x26,0x96); //for cont wave
+    SPI_Write_Reg(0xe3,0xff); 	
+    
+    SPI_Write_Reg(0x50, 0x53);
+    SPI_Write_Reg(0x36, 0x8e); //
+
+    SPI_Write_Reg(0x3d, 0x18);
+
+    while(1){};
+}
+
 /*******************************************************************************
 * Function   :     	BLE_TRX
 * Parameter  :     	txcnt, rxcnt
