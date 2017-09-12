@@ -28,7 +28,8 @@ unsigned char rx_buf[39]; //include header(2B)+mac(6B)+data(max31B), for rx appl
 
 //BLE ADV_data, maxlen=31
 #define LEN_DATA 30
-uint8_t adv_data[30] = {0x02,0x01,0x04, 0x1a,0xff,0x4c,0x00,2,0x15, 0xfd,0xa5,0x06,0x93,0xa4,0xe2,0x4f,0xb1,0xaf,0xcf,0xc6,0xeb,0x07,0x64,0x78,0x25, 0x27,0x38,0x9d,0x85, 0xB6};
+uint8_t adv_data[30] = {0x02,0x01,0x04, 
+			0x1a,0xff,0x4c,0x00,2,0x15, 0xfd,0xa5,0x06,0x93,0xa4,0xe2,0x4f,0xb1,0xaf,0xcf,0xc6,0xeb,0x07,0x64,0x78,0x25, 0x27,0x32,0x52,0xa8, 0xCA};
 
 
 /* Private function prototypes -----------------------------------------------*/
@@ -271,10 +272,9 @@ void BLE_Init(void)
         status = SPI_Read_Reg(CHIP_OK);
     }while(status != 0x80);
 
-
-    //read chip version
-   	status = SPI_Read_Reg(0x1e);
 #if 1 //debug
+    //read chip version
+   status = SPI_Read_Reg(0x1e);
     Uart_Send_String("chip version=");
     Uart_Send_Byte(status);
     Uart_Send_String("\r\n");
@@ -288,17 +288,18 @@ void BLE_Init(void)
 
     BLE_Mode_Sleep();
 
+#if 1 //debug
     //read BLE address. BLE MAC Address
     SPI_Read_Buffer(0x08, ble_Addr, 6);
-#if 1 //debug
-	Uart_Send_String("BleAddr=");
-	Uart_Send_Byte(ble_Addr[5]);
-	Uart_Send_Byte(ble_Addr[4]);
-	Uart_Send_Byte(ble_Addr[3]);
-	Uart_Send_Byte(ble_Addr[2]);
-	Uart_Send_Byte(ble_Addr[1]);
-	Uart_Send_Byte(ble_Addr[0]);
-	Uart_Send_String("\r\n");
+
+    Uart_Send_String("BleAddr=");
+    Uart_Send_Byte(ble_Addr[5]);
+    Uart_Send_Byte(ble_Addr[4]);
+    Uart_Send_Byte(ble_Addr[3]);
+    Uart_Send_Byte(ble_Addr[2]);
+    Uart_Send_Byte(ble_Addr[1]);
+    Uart_Send_Byte(ble_Addr[0]);
+    Uart_Send_String("\r\n");
 #endif
 
 
@@ -330,6 +331,7 @@ void BLE_Init(void)
     data_buf[1] = 0x22;
     SPI_Write_Buffer(0x13, data_buf, 2);
 
+    SPI_Write_Reg(0X21, 0x02);
     SPI_Write_Reg(0x3C, 0x30);
     SPI_Write_Reg(0x3E, 0x30);
 
