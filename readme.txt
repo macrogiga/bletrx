@@ -19,5 +19,5 @@ EVB: AS06_VTB01_V3.0
 20170428	update adv_data in BLE_TRX(), modify indent.
 20170502	improve robustness.
 20170503	Add macro BLE_GUARD_TIME, clean code.
-20170810  Add carrier function call, for xtal capacitor tuning
-
+20170810  Add carrier function call, for xtal capacitor tuning.
+20170912  change example adv data, add register setting in BLE_Init().
