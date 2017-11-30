@@ -385,6 +385,28 @@ void Carrier(void)
     while(1){};
 }
 
+void XOClockOutput(void)
+{
+    uint8_t data_buf[3];
+
+    SPI_Write_Reg(0x50, 0x51);
+    SPI_Write_Reg(0x50, 0x53);
+
+    SPI_Write_Reg(0x35,0x01);
+    data_buf[0] = 0x93;
+    data_buf[1] = 0x00;
+    SPI_Write_Buffer(0x14, data_buf, 2);
+    SPI_Write_Reg(0x3e,0x30);
+    SPI_Write_Reg(0x31,0x00);
+    SPI_Write_Reg(0x3b,0x48);
+    data_buf[0] = 0x00;
+    data_buf[1] = 0x00;
+    data_buf[2] = 0x15;
+    SPI_Write_Buffer(0x12, data_buf, 3);
+
+    while(1){};
+}
+
 /*******************************************************************************
 * Function   :     	BLE_TRX
 * Parameter  :     	txcnt, rxcnt

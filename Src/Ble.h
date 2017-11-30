@@ -11,7 +11,7 @@
 
 //30ms, max:0xffff=65,535 us
 #define BLE_RX_TIMEOUT      30000
-#define BLE_GUARD_TIME      (2*BLE_RX_TIMEOUT/1000)
+#define BLE_GUARD_TIME      (2UL*BLE_RX_TIMEOUT/1000)
 
 /* set BLE TX power
 0  -- -54 dBm
@@ -97,6 +97,7 @@
 #define INT_TYPE_WAKEUP   	0x01
 #define INT_TYPE_SLEEP    	0x02
 #define INT_TYPE_TX_START 	0x10
+#define INT_TYPE_PDU_ERR 	0x20
 #define INT_TYPE_PDU_OK 	0x40
 #define INT_TYPE_TX_Done  	0xFF
 
