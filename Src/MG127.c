@@ -45,12 +45,12 @@ void BLE_Do_Cal(void);
 *******************************************************************************/
 void BLE_Mode_Sleep(void)
 {
-    uint8_t	temp0[4];
+    uint8_t	temp0[4] = {0x02, 0xff, 0xff, 0xff};
 
-    temp0[0] = 0x02;
-    temp0[1] = 0xff;
-    temp0[2] = 0xff;
-    temp0[3] = 0xff;
+    //temp0[0] = 0x02;
+    //temp0[1] = 0xff;
+    //temp0[2] = 0xff;
+    //temp0[3] = 0xff;
 
     SPI_Write_Buffer(SLEEP_WAKEUP,temp0,4);
 }
@@ -74,14 +74,26 @@ void BLE_Mode_PwrUp(void)
     SPI_Write_Reg(0X20, 0x7a); //pwr up
 
     SPI_Write_Reg(0x50, 0x53);
+    SPI_Write_Reg(0X35, 0x00);
     BLE_Do_Cal();
 }
 
 
 void BLE_Mode_PwrDn(void)
 {
+    unsigned char temp[2] = {0x81, 0x02};
+
     SPI_Write_Reg(0X50, 0x51);
     SPI_Write_Reg(0X20, 0x78); //pwr down
+	
+    SPI_Write_Reg(0X50, 0x53);
+    SPI_Write_Reg(0X35, 0x01);  //tm
+
+    //temp[0] = 0x81;
+    //temp[1] = 0x02;
+    SPI_Write_Buffer(0x13, temp, 2);
+    SPI_Write_Reg(0X3e, 0xa0);
+	
     SPI_Write_Reg(0X50, 0x56);
 }
 
@@ -261,7 +273,7 @@ void BLE_Init(void)
         SPI_Write_Buffer(0x00, data_buf, 3);
 
         SPI_Write_Reg(0x36, 0x8e);
-        SPI_Write_Reg(0x37, 0x8e);
+        SPI_Write_Reg(0x37, 0x88);
         SPI_Write_Reg(0x38, 0x88);
         SPI_Write_Reg(0x39, 0x8e);
 
