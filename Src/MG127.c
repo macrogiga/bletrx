@@ -75,7 +75,11 @@ void BLE_Mode_PwrUp(void)
 
     SPI_Write_Reg(0x50, 0x53);
     SPI_Write_Reg(0X35, 0x00);
+    SPI_Write_Reg(0x36, 0x8e);
+
     BLE_Do_Cal();
+    SPI_Write_Reg(0x50, 0x56);
+    BLE_Mode_Sleep();
 }
 
 
@@ -87,6 +91,7 @@ void BLE_Mode_PwrDn(void)
     SPI_Write_Reg(0X20, 0x78); //pwr down
 	
     SPI_Write_Reg(0X50, 0x53);
+    SPI_Write_Reg(0x36, 0x8c);
     SPI_Write_Reg(0X35, 0x01);  //tm
 
     //temp[0] = 0x81;
@@ -135,6 +140,7 @@ void BLE_Set_TimeOut(uint32_t data_us)
     SPI_Write_Buffer(TIMEOUT, temp0, 3);
 }
 
+#if 0
 /*******************************************************************************
 * Function   :     	BLE_Set_Xtal
 * Parameter  :     	uint8_t
@@ -148,6 +154,7 @@ void BLE_Set_Xtal(uint8_t on_flag)
     SPI_Write_Reg(0x3D, 0x18|(on_flag<<2));
     SPI_Write_Reg(0x50, 0x56);
 }
+#endif
 
 static void BLE_Get_Pdu(uint8_t *ptr, uint8_t *len)
 {
@@ -241,7 +248,7 @@ void BLE_Do_Cal()  //calibration
     SPI_Write_Buffer(0x13, data_buf, 2);
     SPI_Write_Reg(0x35,0x00);  //exist testm
     ////////////////////////////////////////////////////
-    SPI_Write_Reg(0x50, 0x56);
+
 }
 
 /*******************************************************************************
@@ -317,7 +324,7 @@ void BLE_Init(void)
 
     SPI_Write_Reg(0x50, 0x53);
 
-    data_buf[0] = 0xff;
+    data_buf[0] = 0x7f;
     data_buf[1] = 0x80; //xocc
     SPI_Write_Buffer(0x14,data_buf,2);
 
@@ -437,7 +444,6 @@ void BLE_TRX()
 
     if(tmp_cnt == 0) return;
 
-    BLE_Set_Xtal(1);
 
     BLE_Mode_PwrUp();
 
@@ -520,7 +526,6 @@ void BLE_TRX()
 
                 tmp_cnt --;
                 if(tmp_cnt == 0){
-                    BLE_Set_Xtal(0);
                     BLE_Mode_PwrDn();
                     break; //exit from while(1)
                 }
