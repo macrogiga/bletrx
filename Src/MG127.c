@@ -75,7 +75,7 @@ void BLE_Mode_PwrUp(void)
 
     SPI_Write_Reg(0x50, 0x53);
     SPI_Write_Reg(0X35, 0x00);
-    SPI_Write_Reg(0x36, 0x8e);
+    SPI_Write_Reg(0x3d, 0x1e);
 
     BLE_Do_Cal();
     SPI_Write_Reg(0x50, 0x56);
@@ -91,7 +91,7 @@ void BLE_Mode_PwrDn(void)
     SPI_Write_Reg(0X20, 0x78); //pwr down
 	
     SPI_Write_Reg(0X50, 0x53);
-    SPI_Write_Reg(0x36, 0x8c);
+    SPI_Write_Reg(0x3d, 0x18);
     SPI_Write_Reg(0X35, 0x01);  //tm
 
     //temp[0] = 0x81;
