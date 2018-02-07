@@ -374,6 +374,7 @@ void BLE_Init(void)
 void Carrier(void)
 {
     unsigned long delay=0x14000;
+    uint8_t data_buf[2] = {0xc0, 0x00};
     
     SPI_Write_Reg(0x50, 0x51);
     SPI_Write_Reg(0x50, 0x53);
@@ -386,6 +387,8 @@ void Carrier(void)
     
     SPI_Write_Reg(0x50, 0x53);	
     SPI_Write_Reg(0x36, 0x8c);  //
+    SPI_Write_Reg(0x27,0x0F);
+    SPI_Write_Buffer(0x4, data_buf, 2);
     SPI_Write_Reg(0x50, 0x51);
     
     SPI_Write_Reg(0x21,0x00);
@@ -399,7 +402,11 @@ void Carrier(void)
     SPI_Write_Reg(0x50, 0x53);
     SPI_Write_Reg(0x36, 0x8e); //
 
-    SPI_Write_Reg(0x3d, 0x18);
+    SPI_Write_Reg(0x50, 0x51);
+    SPI_Write_Reg(0x26, 0x06);
+    SPI_Write_Reg(0x26, 0x96);
+
+    SPI_Write_Reg(0x50, 0x53);
 
     while(1){};
 }
