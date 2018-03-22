@@ -1,0 +1,5 @@
+bletrx-master.rar     MG127E、H 版本接收、发射通信程序。默认是接收程序和发射同时开启
+配逻辑分析仪抓取波形.dsl格式。
+使用逻辑分析仪DSView 打开查看波形 MG127.dsl。
+http://www.dreamsourcelab.com/
+ 
