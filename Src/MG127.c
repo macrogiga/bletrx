@@ -389,6 +389,9 @@ void Carrier(void)
     SPI_Write_Reg(0x36, 0x8c);  //
     SPI_Write_Reg(0x27,0x0F);
     SPI_Write_Buffer(0x4, data_buf, 2);
+    data_buf[0] = 0x24;
+    data_buf[1] = 0x2e;
+    SPI_Write_Buffer(0x11, data_buf, 2);
     SPI_Write_Reg(0x50, 0x51);
     
     SPI_Write_Reg(0x21,0x00);
@@ -411,6 +414,7 @@ void Carrier(void)
     while(1){};
 }
 
+//16MHz output by IRQ pin, for xtal capacitor tuning
 void XOClockOutput(void)
 {
     uint8_t data_buf[3];
