@@ -338,12 +338,12 @@ void BLE_Init(void)
       data_buf[1] = TXGAIN_DFF;
     }
     data_buf[0] = 0xc0;
-    data_buf[2] = 0x1D; // 1E, 20161212
+    data_buf[2] = 0x2D; //rx
     SPI_Write_Buffer(0x4, data_buf, 3);
 
 
-    data_buf[0] = 0;
-    data_buf[1] = 0x00; //default08  20161212
+    data_buf[0] = 0x80; //rx
+    data_buf[1] = 0x00;
     SPI_Write_Buffer(0x0C, data_buf, 2);
 
     data_buf[0] = 0x81;
@@ -353,6 +353,19 @@ void BLE_Init(void)
     SPI_Write_Reg(0X21, 0x02);
     SPI_Write_Reg(0x3C, 0x30);
     SPI_Write_Reg(0x3E, 0x30);
+
+    data_buf[0] = 0x38;
+    data_buf[1] = 0x0F;
+    data_buf[2] = 0x00; //gc
+    SPI_Write_Buffer(0x02, data_buf, 3);
+
+    data_buf[0] = 0x80;
+    data_buf[1] = 0x70; //gain
+    data_buf[2] = 0x21;
+    data_buf[3] = 0x40; //rx
+    SPI_Write_Buffer(0x0b, data_buf, 4);
+
+    SPI_Write_Reg(0x29, 0x71); //gain
 
     data_buf[0] = 0x10;
     data_buf[1] = 0x02;

@@ -22,3 +22,4 @@ EVB: AS06_VTB01_V3.0
 20170810  Add carrier function call, for xtal capacitor tuning.
 20170912  change example adv data, add register setting in BLE_Init().
 20171220  change xoib for better chip adaption; merge xtal control into pwrup/down.
+20180508  configure for better RX
