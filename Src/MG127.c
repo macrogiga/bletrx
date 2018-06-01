@@ -28,7 +28,7 @@ unsigned char rx_buf[39]; //include header(2B)+mac(6B)+data(max31B), for rx appl
 
 //BLE ADV_data, maxlen=31
 #define LEN_DATA 30
-uint8_t adv_data[30] = {0x02,0x01,0x04, 
+uint8_t adv_data[30] = {0x02,0x01,0x04,
 			0x1a,0xff,0x4c,0x00,2,0x15, 0xfd,0xa5,0x06,0x93,0xa4,0xe2,0x4f,0xb1,0xaf,0xcf,0xc6,0xeb,0x07,0x64,0x78,0x25, 0x27,0x32,0x52,0xa8, 0xCA};
 
 
@@ -89,7 +89,7 @@ void BLE_Mode_PwrDn(void)
 
     SPI_Write_Reg(0X50, 0x51);
     SPI_Write_Reg(0X20, 0x78); //pwr down
-	
+
     SPI_Write_Reg(0X50, 0x53);
     SPI_Write_Reg(0x3d, 0x18);
     SPI_Write_Reg(0X35, 0x01);  //tm
@@ -98,7 +98,7 @@ void BLE_Mode_PwrDn(void)
     //temp[1] = 0x02;
     SPI_Write_Buffer(0x13, temp, 2);
     SPI_Write_Reg(0X3e, 0xa0);
-	
+
     SPI_Write_Reg(0X50, 0x56);
 }
 
@@ -334,9 +334,9 @@ void BLE_Init(void)
     SPI_Write_Buffer(0x0f,data_buf,2);
 
     data_buf[1] = SPI_Read_Reg(0x08);  //txgain
-    if(0 == data_buf[1]){
-      data_buf[1] = TXGAIN_DFF;
-    }
+    //if(0 == data_buf[1]){
+    //  data_buf[1] = TXGAIN_DFF;
+    //}
     data_buf[0] = 0xc0;
     data_buf[2] = 0x2D; //rx
     SPI_Write_Buffer(0x4, data_buf, 3);
@@ -388,17 +388,17 @@ void Carrier(void)
 {
     unsigned long delay=0x14000;
     uint8_t data_buf[2] = {0xc0, 0x00};
-    
+
     SPI_Write_Reg(0x50, 0x51);
     SPI_Write_Reg(0x50, 0x53);
-    
+
     SPI_Write_Reg(0x3d, 0x1e);
     while(delay--);
 
     SPI_Write_Reg(0x50, 0x56);
     SPI_Write_Reg(0x20,0x0);
-    
-    SPI_Write_Reg(0x50, 0x53);	
+
+    SPI_Write_Reg(0x50, 0x53);
     SPI_Write_Reg(0x36, 0x8c);  //
     SPI_Write_Reg(0x27,0x0F);
     SPI_Write_Buffer(0x4, data_buf, 2);
@@ -406,15 +406,15 @@ void Carrier(void)
     data_buf[1] = 0x2e;
     SPI_Write_Buffer(0x11, data_buf, 2);
     SPI_Write_Reg(0x50, 0x51);
-    
+
     SPI_Write_Reg(0x21,0x00);
     SPI_Write_Reg(0x25,0x50);
     SPI_Write_Reg(0x24,0x00);
-    
+
     SPI_Write_Reg(0x20,0x0e);
     SPI_Write_Reg(0x26,0x96); //for cont wave
-    SPI_Write_Reg(0xe3,0xff); 	
-    
+    SPI_Write_Reg(0xe3,0xff);
+
     SPI_Write_Reg(0x50, 0x53);
     SPI_Write_Reg(0x36, 0x8e); //
 
