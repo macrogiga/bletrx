@@ -217,7 +217,7 @@ static void BLE_Get_Pdu(uint8_t *ptr, uint8_t *len)
 }
 
 
-#define TXGAIN_DFF 0x15
+#define TXGAIN_DEF 0x12
 
 void BLE_Do_Cal()  //calibration
 {
@@ -335,7 +335,7 @@ void BLE_Init(void)
 
     data_buf[1] = SPI_Read_Reg(0x08);  //txgain
     //if(0 == data_buf[1]){
-    //  data_buf[1] = TXGAIN_DFF;
+    //  data_buf[1] = TXGAIN_DEF;
     //}
     data_buf[0] = 0xc0;
     data_buf[2] = 0x2D; //rx
