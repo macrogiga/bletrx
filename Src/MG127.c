@@ -173,7 +173,7 @@ static void BLE_Get_Pdu(uint8_t *ptr, uint8_t *len)
     switch(hdr_type){
         case ADV_IND:  //advA+0~31
         case ADV_NONCONN_IND:
-        //case ADV_SCAN_IND:
+        case ADV_SCAN_IND:
         //case ADV_SCAN_RSP:
             SPI_Read_Buffer(INITA_RX, &ptr[2], LEN_BLE_ADDR);  //INITA
             len_tmp -= LEN_BLE_ADDR;
