@@ -6,11 +6,11 @@
 #define HFCLK_1MS 			16000UL
 
 
-//10ms
-#define	BLE_START_TIME		(HFCLK_1MS*10)
+//2ms
+#define	BLE_START_TIME		(HFCLK_1MS*2)
 
-//30ms, max:0xffff=65,535 us
-#define BLE_RX_TIMEOUT      30000
+//50ms, max:0xffff=65,535 us
+#define BLE_RX_TIMEOUT      50000
 #define BLE_GUARD_TIME      (2UL*BLE_RX_TIMEOUT/1000)
 
 /* set BLE TX power
