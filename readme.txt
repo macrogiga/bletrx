@@ -2,24 +2,25 @@ MCU: STM8L
 EVB: AS06_VTB01_V3.0
 
 
-ÓÃ»§¿ÉÄÜĞŞ¸ÄµÄ²ÎÊı:
-1, ¹ã²¥°üÄÚÈİÊı¾İ adv_data
-2, ¹ã²¥°üÄÚÈİ³¤¶È LEN_DATA
-3, ·¢Éä´ÎÊı txcnt
-4, ½ÓÊÕ´ÎÊı rxcnt
+ç”¨æˆ·å¯èƒ½ä¿®æ”¹çš„å‚æ•°:
+1, å¹¿æ’­åŒ…å†…å®¹æ•°æ® adv_data
+2, å¹¿æ’­åŒ…å†…å®¹é•¿åº¦ LEN_DATA
+3, å‘å°„æ¬¡æ•° txcnt
+4, æ¥æ”¶æ¬¡æ•° rxcnt
 
-5, ÉäÆµ·¢Éä¹¦ÂÊBLE_TX_POWER
-6, ½ÓÊÕ³¬Ê±Ê±¼äBLE_RX_TIMEOUT,Õâ¸öÊ±¼ä»áÓ°Ïì½ÓÊÕĞ§ÂÊºÍ¹¦ºÄ
-7, ¹¦ºÄ·½Ãæ,¸ù¾İmcuÊµ¼ÊÇé¿öÉèÖÃºÏÊÊµÄBLE_START_TIME
-
-
+5, å°„é¢‘å‘å°„åŠŸç‡BLE_TX_POWER
+6, æ¥æ”¶è¶…æ—¶æ—¶é—´BLE_RX_TIMEOUT,è¿™ä¸ªæ—¶é—´ä¼šå½±å“æ¥æ”¶æ•ˆç‡å’ŒåŠŸè€—
+7, åŠŸè€—æ–¹é¢,æ ¹æ®mcuå®é™…æƒ…å†µè®¾ç½®åˆé€‚çš„BLE_START_TIME
 
 
-20170427	µ÷Õû³ÌĞò¿ò¼Ü,ÓÃ»§³ÌĞò¿ÉÒÔÔÚmain()ÖĞÔö¼Ó,¸ù¾İĞèÒªµ÷ÓÃble·¢ËÍºÍ½ÓÊÕµÄ´ÎÊı.
+
+
+20170427	è°ƒæ•´ç¨‹åºæ¡†æ¶,ç”¨æˆ·ç¨‹åºå¯ä»¥åœ¨main()ä¸­å¢åŠ ,æ ¹æ®éœ€è¦è°ƒç”¨bleå‘é€å’Œæ¥æ”¶çš„æ¬¡æ•°.
 20170428	update adv_data in BLE_TRX(), modify indent.
 20170502	improve robustness.
 20170503	Add macro BLE_GUARD_TIME, clean code.
 20170810  Add carrier function call, for xtal capacitor tuning.
 20170912  change example adv data, add register setting in BLE_Init().
 20171220  change xoib for better chip adaption; merge xtal control into pwrup/down.
-20180508  configure for better RX
+20180508  configure for better RX.
+20180724  adjust for smaller BLE_START_TIME and less power consumption.
