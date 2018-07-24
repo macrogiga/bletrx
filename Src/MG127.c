@@ -490,9 +490,9 @@ void BLE_TRX()
     SPI_Write_Buffer(INT_FLAG, data_buf, 2);
 #endif
 
-    BLE_Mode_Wakeup();
-
     BLE_Set_TimeOut(BLE_RX_TIMEOUT);
+    
+    BLE_Mode_Wakeup();
     tick = BLE_GUARD_TIME;
 
     while(1)
