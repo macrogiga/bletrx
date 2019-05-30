@@ -140,21 +140,6 @@ void BLE_Set_TimeOut(uint32_t data_us)
     SPI_Write_Buffer(TIMEOUT, temp0, 3);
 }
 
-#if 0
-/*******************************************************************************
-* Function   :     	BLE_Set_Xtal
-* Parameter  :     	uint8_t
-* Returns    :     	void
-* Description:
-* Note:      :
-*******************************************************************************/
-void BLE_Set_Xtal(uint8_t on_flag)
-{
-    SPI_Write_Reg(0x50, 0x53);
-    SPI_Write_Reg(0x3D, 0x18|(on_flag<<2));
-    SPI_Write_Reg(0x50, 0x56);
-}
-#endif
 
 static void BLE_Get_Pdu(uint8_t *ptr, uint8_t *len)
 {
@@ -268,6 +253,7 @@ void BLE_Init(void)
     SPI_Write_Reg(0x50, 0x51);
     SPI_Write_Reg(0x50, 0x53);
     SPI_Write_Reg(0x35, 0x00);
+    SPI_Write_Reg(0x36, 0x8c); //ce=L
     SPI_Write_Reg(0x3D, 0x18);
     SPI_Write_Reg(0x50, 0x51);
 
@@ -380,76 +366,9 @@ void BLE_Init(void)
     SPI_Write_Buffer(0xE, data_buf, 2);
 
     SPI_Write_Reg(0x50, 0x56);
+    SPI_Write_Reg(0x20,0x1);
 }
 
-//2480MHz carrier, for xtal capacitor tuning
-//call this function after BLE_Init() in main()
-void Carrier(void)
-{
-    unsigned long delay=0x14000;
-    uint8_t data_buf[3] = {0xc0, 0x00, 0};
-
-    SPI_Write_Reg(0x50, 0x51);
-    SPI_Write_Reg(0x50, 0x53);
-
-    SPI_Write_Reg(0x3d, 0x1e);
-    while(delay--);
-
-    SPI_Write_Reg(0x50, 0x56);
-    SPI_Write_Reg(0x20,0x0);
-
-    SPI_Write_Reg(0x50, 0x53);
-    SPI_Write_Reg(0x36, 0x8c);  //
-    SPI_Write_Reg(0x27,0x0F);
-    SPI_Write_Buffer(0x4, data_buf, 2);
-    data_buf[0] = 0x24;
-    data_buf[1] = 0x2e;
-    data_buf[2] = 0x10;
-    SPI_Write_Buffer(0x11, data_buf, 3);
-    SPI_Write_Reg(0x50, 0x51);
-
-    SPI_Write_Reg(0x21,0x00);
-    SPI_Write_Reg(0x25,0x50);
-    SPI_Write_Reg(0x24,0x00);
-
-    SPI_Write_Reg(0x20,0x0e);
-    SPI_Write_Reg(0x26,0x96); //for cont wave
-    SPI_Write_Reg(0xe3,0xff);
-
-    SPI_Write_Reg(0x50, 0x53);
-    SPI_Write_Reg(0x36, 0x8e); //
-
-    SPI_Write_Reg(0x50, 0x51);
-    SPI_Write_Reg(0x26, 0x06);
-    SPI_Write_Reg(0x26, 0x96);
-
-    SPI_Write_Reg(0x50, 0x53);
-
-    while(1){};
-}
-
-//16MHz output by IRQ pin, for xtal capacitor tuning
-void XOClockOutput(void)
-{
-    uint8_t data_buf[3];
-
-    SPI_Write_Reg(0x50, 0x51);
-    SPI_Write_Reg(0x50, 0x53);
-
-    SPI_Write_Reg(0x35,0x01);
-    data_buf[0] = 0x93;
-    data_buf[1] = 0x00;
-    SPI_Write_Buffer(0x14, data_buf, 2);
-    SPI_Write_Reg(0x3e,0x30);
-    SPI_Write_Reg(0x31,0x00);
-    SPI_Write_Reg(0x3b,0x48);
-    data_buf[0] = 0x00;
-    data_buf[1] = 0x00;
-    data_buf[2] = 0x15;
-    SPI_Write_Buffer(0x12, data_buf, 3);
-
-    while(1){};
-}
 
 /*******************************************************************************
 * Function   :     	BLE_TRX
