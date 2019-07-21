@@ -197,7 +197,8 @@ static void BLE_Get_Pdu(uint8_t *ptr, uint8_t *len)
     }
 
     if(len_tmp > 0){
-        SPI_Read_Buffer(R_RX_PAYLOAD, &ptr[2+LEN_BLE_ADDR], len_tmp);
+        if(len_tmp <= 31)
+            SPI_Read_Buffer(R_RX_PAYLOAD, &ptr[2+LEN_BLE_ADDR], len_tmp);
     }
 }
 
